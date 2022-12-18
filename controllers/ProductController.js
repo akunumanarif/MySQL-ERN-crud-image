@@ -33,6 +33,9 @@ export const saveProduct = (req, res) => {
 
   if (!allowedFileType.includes(fileExtention.toLoweCase()))
     return res.status(422).json({ msg: "Invalid File Type" });
+
+  if (fileSize > 5000000)
+    return res.status(422).json({ msg: "File must less than 5mb" });
 };
 export const updateProduct = (req, res) => {};
 export const deleteProduct = (req, res) => {};
