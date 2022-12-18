@@ -4,6 +4,7 @@ import FileUpload from "express-fileupload";
 import dotenv from "dotenv";
 import cors from "cors";
 import ProductRoute from "./routes/ProductRoute.js";
+import Product from "./models/ProductModel.js";
 const app = express();
 const PORT = 5000;
 
