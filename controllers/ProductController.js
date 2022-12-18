@@ -30,6 +30,9 @@ export const saveProduct = (req, res) => {
   const fileName = file.md5 + fileExtention;
   const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
   const allowedFileType = [".png", ".jpg", ".jpeg"];
+
+  if (!allowedFileType.includes(fileExtention.toLoweCase()))
+    return res.status(422).json({ msg: "Invalid File Type" });
 };
 export const updateProduct = (req, res) => {};
 export const deleteProduct = (req, res) => {};
