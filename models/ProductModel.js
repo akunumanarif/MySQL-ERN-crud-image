@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import DB from "../config/Database";
+import DB from "../config/Database.js";
 
 const { DataTypes } = Sequelize;
 const Product = DB.define(
@@ -13,6 +13,8 @@ const Product = DB.define(
     freezeTableName: true,
   }
 );
+
+export default Product;
 
 (async () => {
   await DB.sync();
