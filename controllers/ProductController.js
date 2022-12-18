@@ -26,16 +26,27 @@ export const saveProduct = (req, res) => {
   const productTitle = req.body.title;
   const file = req.files.file;
   const fileSize = file.data.length;
-  const fileExtention = file.extname(file.name);
+  const fileExtention = path.extname(file.name);
   const fileName = file.md5 + fileExtention;
   const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
   const allowedFileType = [".png", ".jpg", ".jpeg"];
 
-  if (!allowedFileType.includes(fileExtention.toLoweCase()))
+  if (!allowedFileType.includes(fileExtention.toLowerCase()))
     return res.status(422).json({ msg: "Invalid File Type" });
 
   if (fileSize > 5000000)
     return res.status(422).json({ msg: "File must less than 5mb" });
+
+  file.mv(`./public/images/${fileName}`, async (err) => {
+    if (err) return res.status(500).json({ msg: err.message });
+
+    try {
+      await Product.create({ name: productTitle, img: fileName, url: url });
+      res.status(201).json({ msg: "Product Successfully Created" });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  });
 };
 export const updateProduct = (req, res) => {};
 export const deleteProduct = (req, res) => {};
