@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { Sequelize } from "sequelize";
 
-const DB = new Sequelize("upload_db", "root", process.env.DB_PASS, {
+const DB = new Sequelize("upload_db", "root", "", {
   host: "localhost",
   dialect: "mysql",
 });
