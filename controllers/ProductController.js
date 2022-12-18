@@ -1,5 +1,5 @@
 import Product from "../models/ProductModel.js";
-
+import path from "path";
 export const getProduct = async (req, res) => {
   try {
     const response = await Product.findAll();
@@ -20,6 +20,16 @@ export const getProductById = async (req, res) => {
     res.status(404).json(error);
   }
 };
-export const saveProduct = (req, res) => {};
+export const saveProduct = (req, res) => {
+  if (req.files === null)
+    return res.status(400).json({ msg: "No File Upload" });
+  const productTitle = req.body.title;
+  const file = req.files.file;
+  const fileSize = file.data.length;
+  const fileExtention = file.extname(file.name);
+  const fileName = file.md5 + fileExtention;
+  const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
+  const allowedFileType = [".png", ".jpg", ".jpeg"];
+};
 export const updateProduct = (req, res) => {};
 export const deleteProduct = (req, res) => {};
