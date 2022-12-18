@@ -1,5 +1,7 @@
+dotenv.config();
 import express from "express";
 import FileUpload from "express-fileupload";
+import dotenv from "dotenv";
 import cors from "cors";
 
 const app = express();
