@@ -49,7 +49,41 @@ export const saveProduct = (req, res) => {
     }
   });
 };
-export const updateProduct = (req, res) => {};
+export const updateProduct = async (req, res) => {
+  const product = await Product.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  if (!product) return res.status(404).json({ msg: "Product Not Found" });
+
+  let fileName = "";
+  if (fileName === null) {
+    fileName = Product.img;
+  } else {
+    const file = req.files.file;
+    const fileSize = file.data.length;
+    const fileExtention = path.extname(file.name);
+    fileName = file.md5 + fileExtention;
+    const allowedFileType = [".png", ".jpg", ".jpeg"];
+
+    if (!allowedFileType.includes(fileExtention.toLowerCase()))
+      return res.status(422).json({ msg: "Invalid File Type" });
+
+    if (fileSize > 5000000)
+      return res.status(422).json({ msg: "File must less than 5mb" });
+
+    const filePath = `./public/images/${fileName}`;
+
+    fs.mv(filePath, (err) => {
+      if (err) return res.status(500).json({ msg: err.message });
+    });
+  }
+
+  const productTitle = req.body.title;
+  const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
+};
 export const deleteProduct = async (req, res) => {
   const product = await Product.findOne({
     where: {
