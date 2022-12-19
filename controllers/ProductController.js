@@ -74,15 +74,34 @@ export const updateProduct = async (req, res) => {
     if (fileSize > 5000000)
       return res.status(422).json({ msg: "File must less than 5mb" });
 
-    const filePath = `./public/images/${fileName}`;
+    const filePath = `./public/images/${product.img}`;
+    fs.unlinkSync(filePath);
 
-    fs.mv(filePath, (err) => {
+    file.mv(filePath, (err) => {
       if (err) return res.status(500).json({ msg: err.message });
     });
   }
 
   const productTitle = req.body.title;
   const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
+
+  try {
+    await Product.update(
+      {
+        name: productTitle,
+        img: fileName,
+        url: url,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    res.status(200).json({ msg: "Product has been updated" });
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
 };
 export const deleteProduct = async (req, res) => {
   const product = await Product.findOne({
