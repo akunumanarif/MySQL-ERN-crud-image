@@ -1,5 +1,6 @@
 import Product from "../models/ProductModel.js";
 import path from "path";
+import fs from "fs";
 export const getProduct = async (req, res) => {
   try {
     const response = await Product.findAll();
@@ -49,4 +50,25 @@ export const saveProduct = (req, res) => {
   });
 };
 export const updateProduct = (req, res) => {};
-export const deleteProduct = (req, res) => {};
+export const deleteProduct = async (req, res) => {
+  const product = await Product.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  if (!product) return res.status(404).json({ msg: "Product Not Found" });
+
+  try {
+    const filePath = `./public/images/${product.img}`;
+    fs.unlinkSync(filePath);
+    await Product.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.status(200).json({ msg: "Product has been deleted" });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
